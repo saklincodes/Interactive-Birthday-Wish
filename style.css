@@ -1,19 +1,30 @@
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent !important;
+  -webkit-touch-callout: none !important;
+  user-select: none !important;
+  -webkit-user-select: none !important;
+  -moz-user-select: none !important;
+  -ms-user-select: none !important;
+  touch-action: manipulation;
+}
 
-    :root {
-      --font-main: 'Plus Jakarta Sans', 'Nunito', 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      --font-handwriting: 'Dancing Script', 'Caveat', cursive;
-      --purple-dark: #1a0a2e;
-      --purple-mid: #3d1a5c;
-      --pink-hot: #f03e7b;
-      --pink-mid: #ff6b9d;
-      --pink-light: #ffccd5;
-      --pink-bg: #fde8ee;
-      --gold: #e8a842;
-      --gold-light: #f5c863;
-      --white: #ffffff;
-      --dark-text: #2a1040;
-    }
+:root {
+  --font-main: 'Plus Jakarta Sans', 'Nunito', 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-handwriting: 'Dancing Script', 'Caveat', cursive;
+  --purple-dark: #1a0a2e;
+  --purple-mid: #3d1a5c;
+  --pink-hot: #f03e7b;
+  --pink-mid: #ff6b9d;
+  --pink-light: #ffccd5;
+  --pink-bg: #fde8ee;
+  --gold: #e8a842;
+  --gold-light: #f5c863;
+  --white: #ffffff;
+  --dark-text: #2a1040;
+}
 
     html, body {
       width: 100vw;
@@ -96,31 +107,31 @@
     }
 
     .intro-badge {
-      font-size: clamp(11px, 1.1vw, 15px);
+      font-size: clamp(10px, 1.1vw + 0.4vh, 16px);
       font-weight: 800;
-      letter-spacing: 4px;
+      letter-spacing: clamp(2px, 0.3vw, 4px);
       text-transform: uppercase;
       color: var(--pink-hot);
       background: rgba(240, 62, 123, 0.12);
       border: 1.5px solid rgba(240, 62, 123, 0.35);
-      padding: 8px 22px;
+      padding: clamp(6px, 0.8vh, 10px) clamp(14px, 2vw, 24px);
       border-radius: 30px;
       -webkit-backdrop-filter: blur(12px);
       backdrop-filter: blur(12px);
       box-shadow: 0 4px 20px rgba(240, 62, 123, 0.15);
-      margin-bottom: clamp(12px, 2vh, 20px);
-      opacity: 0;
+      margin-bottom: clamp(10px, 1.8vh, 20px);
+      opacity: 1;
     }
 
     .intro-time-wrap {
       display: flex;
       align-items: baseline;
-      gap: 12px;
-      opacity: 0;
+      gap: clamp(8px, 1.2vw, 16px);
+      opacity: 1;
     }
     .intro-time {
       font-family: var(--font-main);
-      font-size: clamp(52px, 7.5vw, 100px);
+      font-size: clamp(42px, 6.5vw + 2.5vh, 105px);
       font-weight: 900;
       letter-spacing: -2px;
       background: linear-gradient(135deg, #f03e7b 0%, #d81b60 50%, #ff4081 100%);
@@ -132,33 +143,33 @@
     }
     .intro-ampm {
       font-family: var(--font-main);
-      font-size: clamp(18px, 2.5vw, 32px);
+      font-size: clamp(13px, 1.8vw + 0.8vh, 32px);
       font-weight: 800;
       color: var(--pink-hot);
       text-transform: uppercase;
       letter-spacing: 2px;
       background: rgba(240, 62, 123, 0.15);
-      padding: 5px 14px;
+      padding: clamp(4px, 0.6vh, 6px) clamp(10px, 1.2vw, 16px);
       border-radius: 12px;
       border: 1px solid rgba(240, 62, 123, 0.4);
       box-shadow: 0 4px 15px rgba(240, 62, 123, 0.15);
     }
 
     .intro-subtitle {
-      margin-top: clamp(14px, 2.2vh, 24px);
+      margin-top: clamp(12px, 2vh, 24px);
       text-align: center;
-      font-size: clamp(18px, 2.4vw, 34px);
+      font-size: clamp(15px, 1.8vw + 0.8vh, 34px);
       font-weight: 700;
       color: var(--dark-text);
       line-height: 1.4;
       max-width: 780px;
-      opacity: 0;
+      opacity: 1;
     }
     .intro-subtitle .pink-glow-text {
       display: block;
-      margin-top: 8px;
+      margin-top: clamp(4px, 0.8vh, 8px);
       font-family: var(--font-main);
-      font-size: clamp(20px, 2.8vw, 38px);
+      font-size: clamp(16px, 2.2vw + 1vh, 38px);
       font-weight: 800;
       background: linear-gradient(135deg, #f03e7b 0%, #d81b60 100%);
       background-clip: text;
@@ -168,15 +179,15 @@
     }
 
     .msg-bubble {
-      margin-top: clamp(18px, 3vh, 32px);
+      margin-top: clamp(14px, 2.5vh, 32px);
       background: linear-gradient(135deg, #f03e7b 0%, #cc2450 100%);
       -webkit-backdrop-filter: blur(20px);
       backdrop-filter: blur(20px);
       border: 1.5px solid rgba(255, 255, 255, 0.6);
       border-radius: 60px;
-      padding: clamp(12px, 1.8vh, 18px) clamp(30px, 4vw, 48px);
+      padding: clamp(10px, 1.5vh, 18px) clamp(22px, 3.5vw, 48px);
       box-shadow: 0 12px 35px rgba(200, 30, 80, 0.35);
-      opacity: 0;
+      opacity: 1;
       cursor: pointer;
       user-select: none;
       transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.35s ease, background 0.35s ease;
@@ -191,7 +202,7 @@
       box-shadow: 0 18px 45px rgba(200, 30, 80, 0.5);
     }
     .msg-bubble .msg-main {
-      font-size: clamp(18px, 2.4vw, 34px);
+      font-size: clamp(15px, 1.8vw + 0.8vh, 34px);
       color: #ffffff;
       font-weight: 800;
       letter-spacing: 0.5px;
@@ -199,7 +210,7 @@
       text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
     }
     .msg-bubble .msg-hint {
-      font-size: clamp(11px, 1.1vw, 15px);
+      font-size: clamp(10px, 1vw + 0.4vh, 15px);
       color: #ffe4f0;
       font-weight: 700;
       letter-spacing: 2px;
@@ -226,16 +237,21 @@
       background: radial-gradient(circle at 50% 40%, #ffe4f0 0%, #ffd8e8 50%, #ffe8c8 100%);
     }
     .gift-header-tag {
-      font-size: clamp(14px, 1.4vw, 20px);
-      letter-spacing: 4px;
+      font-size: clamp(10px, 1vw + 0.4vh, 18px);
+      letter-spacing: clamp(1.5px, 0.25vw, 3.5px);
       font-weight: 800;
       color: var(--pink-hot);
       text-transform: uppercase;
+      text-align: center;
+      max-width: 95%;
+      margin: 0 auto;
+      line-height: 1.4;
+      text-wrap: balance;
       opacity: 0;
       animation: fadeIn 0.5s ease forwards 0.3s;
     }
     .gift-headline {
-      font-size: clamp(36px, 4.5vw, 72px);
+      font-size: clamp(24px, 3.8vw + 1.8vh, 72px);
       font-weight: 900;
       color: var(--dark-text);
       text-align: center;
@@ -246,7 +262,7 @@
     }
     .gift-headline .highlight { color: var(--pink-hot); }
     .gift-subtext {
-      font-size: clamp(16px, 1.8vw, 28px);
+      font-size: clamp(13px, 1.5vw + 0.6vh, 28px);
       color: #777;
       margin-top: 10px;
       opacity: 0;
@@ -368,9 +384,9 @@
       transform: rotate(-3deg);
       text-align: left;
     }
-    .gift-tag .to-label { font-size: 7px; letter-spacing: 1.5px; color: #888; font-weight: 800; }
-    .gift-tag .name { font-family: var(--font-handwriting); font-size: clamp(14px, 1.6vw, 21px); color: var(--pink-hot); font-weight: 700; line-height: 1.1; }
-    .gift-tag .from-label { font-size: 7px; letter-spacing: 1px; color: #555; font-weight: 800; margin-top: 1px; }
+    .gift-tag .to-label { font-size: clamp(6.5px, 0.7vw + 0.2vh, 9px); letter-spacing: 1.5px; color: #888; font-weight: 800; }
+    .gift-tag .name { font-family: var(--font-handwriting); font-size: clamp(12px, 1.4vw + 0.5vh, 22px); color: var(--pink-hot); font-weight: 700; line-height: 1.1; }
+    .gift-tag .from-label { font-size: clamp(6.5px, 0.7vw + 0.2vh, 9px); letter-spacing: 1px; color: #555; font-weight: 800; margin-top: 1px; }
 
     .open-btn {
       margin-top: 35px;
@@ -378,8 +394,8 @@
       color: white;
       border: none;
       border-radius: 50px;
-      padding: 16px 54px;
-      font-size: clamp(18px, 2vw, 32px);
+      padding: clamp(12px, 1.6vh, 18px) clamp(30px, 4vw, 56px);
+      font-size: clamp(14px, 1.6vw + 0.8vh, 32px);
       font-weight: 800;
       cursor: pointer;
       opacity: 0;
@@ -388,7 +404,7 @@
       box-shadow: 0 10px 30px rgba(200,30,80,0.4);
     }
     .open-btn:hover { transform: translateY(-3px) scale(1.05); box-shadow: 0 15px 40px rgba(200,30,80,0.5); }
-    .sound-hint { font-size: 14px; color: #888; margin-top: 14px; opacity: 0; animation: fadeIn 0.5s ease forwards 1.8s; }
+    .sound-hint { font-size: clamp(11px, 1.1vw + 0.4vh, 16px); color: #888; margin-top: 14px; opacity: 0; animation: fadeIn 0.5s ease forwards 1.8s; }
 
     /* ============================
        SCENE 3 — CUPID UNTIES
@@ -401,12 +417,12 @@
       top: 40px;
       background: white;
       border-radius: 50px;
-      padding: 14px 40px;
+      padding: clamp(10px, 1.4vh, 16px) clamp(24px, 3vw, 44px);
       box-shadow: 0 10px 35px rgba(0,0,0,0.1);
       opacity: 0;
       animation: slideDown 0.6s ease forwards 0.2s;
     }
-    .top-pill .pill-text { font-size: clamp(20px, 2.2vw, 36px); font-weight: 900; color: var(--dark-text); }
+    .top-pill .pill-text { font-size: clamp(16px, 1.8vw + 0.8vh, 36px); font-weight: 900; color: var(--dark-text); }
     .top-pill .pill-text .highlight { color: var(--pink-hot); }
 
     .cupid-char {
@@ -441,19 +457,19 @@
       100% { transform: translateY(110vh) rotate(720deg); opacity: 0.3; }
     }
     .hb-main {
-      font-size: clamp(48px, 7vw, 110px);
+      font-size: clamp(34px, 5.5vw + 2.2vh, 105px);
       font-weight: 900;
       color: #ffffff;
       text-align: center;
       text-shadow: 0 10px 35px rgba(0, 0, 0, 0.4), 0 0 20px rgba(255, 255, 255, 0.5);
       line-height: 1.05;
-      letter-spacing: 4px;
+      letter-spacing: clamp(2px, 0.3vw, 4px);
       transform-style: preserve-3d;
       will-change: transform, opacity;
     }
     .hb-name {
       font-family: var(--font-handwriting);
-      font-size: clamp(68px, 11vw, 160px);
+      font-size: clamp(48px, 8.5vw + 3.5vh, 155px);
       background: linear-gradient(135deg, #ffffff 0%, #ffe082 35%, #ffd700 70%, #ff80ab 100%);
       background-clip: text;
       -webkit-background-clip: text;
@@ -471,12 +487,12 @@
       100% { transform: translateY(-10px) rotate(1.5deg); }
     }
     .hb-from {
-      font-size: clamp(15px, 1.8vw, 26px);
-      letter-spacing: 6px;
+      font-size: clamp(12px, 1.3vw + 0.5vh, 26px);
+      letter-spacing: clamp(3px, 0.4vw, 6px);
       color: #ffffff;
       font-weight: 800;
-      margin-top: 15px;
-      padding: 10px 32px;
+      margin-top: clamp(8px, 1.5vh, 18px);
+      padding: clamp(7px, 1vh, 12px) clamp(18px, 2.5vw, 36px);
       background: rgba(255, 255, 255, 0.18);
       -webkit-backdrop-filter: blur(12px);
       backdrop-filter: blur(12px);
@@ -499,8 +515,8 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: flex-start;
-      padding-top: clamp(20px, 4vh, 45px);
+      justify-content: center;
+      padding: clamp(15px, 2.5vh, 35px) 15px;
       overflow: hidden;
     }
     #scene-cake::before {
@@ -528,7 +544,7 @@
       text-align: center;
       z-index: 20;
       max-width: 90%;
-      margin-bottom: 10px;
+      margin-bottom: 5px;
     }
 
     .cake-badge {
@@ -537,22 +553,22 @@
       backdrop-filter: blur(14px);
       border: 1.5px solid rgba(240, 62, 123, 0.4);
       border-radius: 50px;
-      padding: 7px 24px;
-      font-size: clamp(12px, 1.3vw, 18px);
+      padding: clamp(5px, 0.8vh, 8px) clamp(16px, 2vw, 26px);
+      font-size: clamp(10px, 1vw + 0.4vh, 18px);
       font-weight: 800;
       color: var(--pink-hot);
-      letter-spacing: 3px;
+      letter-spacing: clamp(1.5px, 0.2vw, 3px);
       text-transform: uppercase;
       box-shadow: 0 6px 20px rgba(240, 62, 123, 0.15);
-      margin-bottom: 10px;
+      margin-bottom: clamp(4px, 0.8vh, 8px);
       will-change: transform, opacity;
     }
 
     .cake-title {
-      font-size: clamp(24px, 3.6vw, 52px);
+      font-size: clamp(18px, 2.8vw + 1.2vh, 48px);
       font-weight: 900;
       color: var(--dark-text);
-      margin: 0 0 8px 0;
+      margin: 0 0 6px 0;
       line-height: 1.15;
       letter-spacing: 0.5px;
       will-change: transform, opacity;
@@ -567,7 +583,7 @@
     }
 
     .cake-subtext {
-      font-size: clamp(14px, 1.6vw, 22px);
+      font-size: clamp(11.5px, 1.2vw + 0.5vh, 20px);
       color: #666666;
       font-weight: 600;
       margin: 0;
@@ -595,8 +611,6 @@
       100% { transform: translateY(-35px) rotate(-10deg) scale(0.85); opacity: 0.4; }
     }
 
-
-
     .cake-stage {
       position: relative;
       display: flex;
@@ -604,14 +618,14 @@
       align-items: center;
       justify-content: center;
       z-index: 10;
-      margin-top: 15px;
+      margin-top: 10px;
       will-change: transform, opacity;
     }
 
     .cake-wrapper-svg {
       position: relative;
-      width: clamp(250px, 26vw, 340px);
-      height: clamp(320px, 32vw, 420px);
+      width: clamp(210px, 42vw, 320px);
+      height: clamp(260px, 42vh, 380px);
       display: flex;
       justify-content: center;
       align-items: flex-end;
@@ -619,9 +633,9 @@
 
     .cake-glow {
       position: absolute;
-      bottom: 20px;
-      width: 280px;
-      height: 280px;
+      bottom: 10px;
+      width: 240px;
+      height: 240px;
       background: radial-gradient(circle, rgba(255, 230, 180, 0.5) 0%, rgba(255, 182, 193, 0.25) 50%, transparent 70%);
       border-radius: 50%;
       filter: blur(25px);
@@ -638,9 +652,10 @@
     #cakeSvg {
       display: block;
       position: relative;
-      width: clamp(250px, 26vw, 340px);
-      height: 520px;
-      margin-top: -110px;
+      width: 100%;
+      height: 100%;
+      margin-top: 0;
+      object-fit: contain;
       filter: drop-shadow(0 15px 25px rgba(0,0,0,0.18));
       z-index: 8;
     }
@@ -649,10 +664,9 @@
       background: #ffffff;
       border-radius: 10px;
       position: absolute;
-      top: 250px;
+      bottom: 21.5%;
       left: 50%;
       margin-left: -2.5px;
-      margin-top: -8.33px;
       width: 5px;
       height: 35px;
       transform: translateY(0);
@@ -757,7 +771,7 @@
       flex-direction: column;
       align-items: center;
       justify-content: flex-start;
-      padding-top: clamp(20px, 4vh, 40px);
+      padding-top: clamp(20px, 3.5vh, 45px);
       overflow: hidden;
     }
     .balloon-header-wrap {
@@ -767,7 +781,7 @@
       text-align: center;
       z-index: 20;
       max-width: 90%;
-      margin-bottom: 10px;
+      margin-bottom: 5px;
     }
     .balloon-badge {
       background: rgba(240, 62, 123, 0.12);
@@ -775,18 +789,18 @@
       backdrop-filter: blur(14px);
       border: 1.5px solid rgba(240, 62, 123, 0.4);
       border-radius: 50px;
-      padding: 7px 24px;
-      font-size: clamp(12px, 1.3vw, 18px);
+      padding: clamp(5px, 0.8vh, 8px) clamp(16px, 2vw, 26px);
+      font-size: clamp(10px, 1vw + 0.4vh, 18px);
       font-weight: 800;
       color: var(--pink-hot);
-      letter-spacing: 3px;
+      letter-spacing: clamp(1.5px, 0.2vw, 3px);
       text-transform: uppercase;
       box-shadow: 0 6px 20px rgba(240, 62, 123, 0.15);
-      margin-bottom: 10px;
+      margin-bottom: clamp(4px, 0.8vh, 8px);
       will-change: transform, opacity;
     }
     .balloon-title {
-      font-size: clamp(24px, 3.5vw, 50px);
+      font-size: clamp(18px, 2.8vw + 1.2vh, 48px);
       font-weight: 900;
       color: var(--dark-text);
       margin: 0 0 6px 0;
@@ -803,7 +817,7 @@
       filter: drop-shadow(0 4px 15px rgba(240, 62, 123, 0.35));
     }
     .balloon-subtext {
-      font-size: clamp(14px, 1.6vw, 22px);
+      font-size: clamp(11.5px, 1.2vw + 0.5vh, 20px);
       color: #666;
       font-weight: 600;
       margin: 0;
@@ -813,13 +827,13 @@
     .reason-card {
       background: white;
       border-radius: 24px;
-      padding: 18px 32px;
-      margin-top: 10px;
+      padding: clamp(10px, 1.5vh, 18px) clamp(16px, 2.5vw, 30px);
+      margin-top: 5px;
       max-width: 580px;
       width: 90%;
       box-shadow: 0 10px 40px rgba(0,0,0,0.08);
       text-align: center;
-      min-height: 110px;
+      min-height: 90px;
       display: none; /* Hidden until 1st balloon burst! */
       opacity: 0;
       flex-direction: column;
@@ -832,8 +846,8 @@
       transform-style: preserve-3d;
     }
     .reason-label {
-      font-size: 13px;
-      letter-spacing: 3px;
+      font-size: clamp(10px, 1vw + 0.35vh, 14px);
+      letter-spacing: clamp(1.5px, 0.2vw, 3px);
       font-weight: 800;
       color: var(--pink-hot);
       text-transform: uppercase;
@@ -843,7 +857,7 @@
     }
     .reason-text {
       font-family: var(--font-handwriting);
-      font-size: clamp(24px, 2.8vw, 42px);
+      font-size: clamp(16px, 2.2vw + 0.9vh, 38px);
       color: var(--dark-text);
       margin-top: 4px;
       font-weight: 700;
@@ -855,7 +869,7 @@
       position: fixed;
       pointer-events: none;
       z-index: 99;
-      font-size: clamp(16px, 2vw, 24px);
+      font-size: clamp(14px, 1.8vw, 24px);
       will-change: transform, opacity;
       filter: drop-shadow(0 2px 8px rgba(255, 255, 255, 0.9));
     }
@@ -885,8 +899,9 @@
     .balloons-graphic {
       display: flex;
       justify-content: center;
-      gap: clamp(10px, 1.8vw, 22px);
-      margin-top: 25px;
+      gap: clamp(8px, 2vw, 22px);
+      margin-top: clamp(20px, 4vh, 40px);
+      margin-bottom: 15px;
       z-index: 10;
     }
     .balloon-item {
@@ -918,8 +933,8 @@
       transition: all 0.3s ease;
     }
     .balloon-oval {
-      width: clamp(55px, 6.5vw, 85px);
-      height: clamp(75px, 8.5vw, 110px);
+      width: clamp(52px, 6.5vw, 82px);
+      height: clamp(70px, 8.5vw, 105px);
       border-radius: 50%;
       position: relative;
       display: flex;
@@ -932,23 +947,41 @@
       transition: transform 0.2s ease;
     }
     .balloon-oval:hover { transform: scale(1.1); }
-    .balloon-string { width: 2px; height: 45px; background: rgba(0,0,0,0.2); }
+    .balloon-string { width: 2px; height: 40px; background: rgba(0,0,0,0.2); }
 
     /* Compact Archery Bow for Scene 6 Balloons */
     .balloon-bow-wrap {
       position: absolute;
-      bottom: 30px;
+      bottom: clamp(15px, 3.5vh, 35px);
       left: 50%;
-      margin-left: -32px;
-      width: 65px;
-      height: 65px;
+      margin-left: -30px;
+      width: 60px;
+      height: 60px;
       cursor: pointer;
       z-index: 50;
-      transform-origin: center center;
-      transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+      transform-origin: 50% 60%;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+      transition: filter 0.2s ease;
     }
     .balloon-bow-wrap:hover {
-      transform: scale(1.15);
+      filter: drop-shadow(0 6px 16px rgba(240, 62, 123, 0.45));
+    }
+    #balloonBowWrap .bow-svg {
+      width: 100%;
+      height: auto;
+      display: block;
+      pointer-events: none;
+    }
+    #balloonBowWrap .arrow-svg {
+      position: absolute;
+      top: -24px;
+      bottom: auto;
+      left: 50%;
+      margin-left: -11px;
+      width: 22px;
+      height: auto;
+      pointer-events: none;
     }
 
     /* ============================
@@ -969,22 +1002,22 @@
       position: relative;
     }
     .wishes-card-title {
-      font-size: 13px;
-      letter-spacing: 4px;
+      font-size: clamp(10px, 1vw + 0.35vh, 16px);
+      letter-spacing: clamp(2px, 0.3vw, 4px);
       font-weight: 800;
       color: var(--pink-hot);
-      margin-bottom: 22px;
+      margin-bottom: clamp(12px, 2vh, 22px);
       text-transform: uppercase;
       text-align: center;
     }
     .wish-item {
       display: flex;
       align-items: center;
-      gap: 16px;
-      padding: 14px 0;
+      gap: clamp(8px, 1.2vw, 16px);
+      padding: clamp(8px, 1.2vh, 14px) 0;
       border-bottom: 1px dashed rgba(255, 179, 200, 0.4);
       font-family: var(--font-main);
-      font-size: clamp(18px, 2.1vw, 28px);
+      font-size: clamp(13px, 1.5vw + 0.6vh, 26px);
       color: var(--dark-text);
       font-weight: 700;
       position: relative;
@@ -1002,10 +1035,10 @@
       background: linear-gradient(135deg, #ff3b75 0%, #ff5288 100%);
       color: #ffffff;
       font-family: var(--font-main);
-      font-size: 11px;
+      font-size: clamp(8.5px, 0.8vw + 0.3vh, 12px);
       font-weight: 900;
-      letter-spacing: 1.5px;
-      padding: 5px 14px;
+      letter-spacing: clamp(1px, 0.2vw, 1.5px);
+      padding: clamp(3px, 0.5vh, 5px) clamp(8px, 1.2vw, 14px);
       border-radius: 6px;
       border: 2px dashed #ffffff;
       box-shadow: 0 4px 14px rgba(255, 59, 117, 0.35);
@@ -1020,7 +1053,7 @@
     }
 
     .wishes-next-wrap {
-      margin-top: 25px;
+      margin-top: clamp(14px, 2.5vh, 25px);
       display: flex;
       justify-content: center;
     }
@@ -1029,9 +1062,9 @@
       color: #ffffff;
       border: none;
       border-radius: 40px;
-      padding: 14px 36px;
+      padding: clamp(10px, 1.4vh, 14px) clamp(24px, 3.2vw, 40px);
       font-family: var(--font-main);
-      font-size: clamp(16px, 1.8vw, 22px);
+      font-size: clamp(13px, 1.4vw + 0.5vh, 22px);
       font-weight: 800;
       cursor: pointer;
       box-shadow: 0 8px 25px rgba(255, 59, 117, 0.4);
@@ -1096,7 +1129,7 @@
       -webkit-backdrop-filter: blur(20px);
       backdrop-filter: blur(20px);
       border-radius: 26px;
-      padding: clamp(20px, 3.2vw, 36px) clamp(22px, 4vw, 48px);
+      padding: clamp(16px, 2.5vw, 36px) clamp(18px, 3.5vw, 48px);
       max-width: 620px;
       width: 94%;
       max-height: calc(100vh - 30px);
@@ -1118,8 +1151,8 @@
       flex-shrink: 0;
     }
     .letter-tag {
-      font-size: 11px;
-      letter-spacing: 4px;
+      font-size: clamp(9px, 0.9vw + 0.35vh, 13px);
+      letter-spacing: clamp(2px, 0.3vw, 4px);
       font-weight: 800;
       color: #ff3b75;
       text-transform: uppercase;
@@ -1128,7 +1161,7 @@
     }
     .letter-title {
       font-family: var(--font-main);
-      font-size: clamp(22px, 2.8vw, 36px);
+      font-size: clamp(18px, 2.2vw + 0.8vh, 34px);
       font-weight: 900;
       color: #2b0c3a;
       line-height: 1.2;
@@ -1136,44 +1169,44 @@
     .letter-divider {
       height: 2px;
       background: linear-gradient(90deg, transparent, #ffb3c8, transparent);
-      margin: 12px 0;
+      margin: clamp(8px, 1.2vh, 14px) 0;
       flex-shrink: 0;
     }
 
     .letter-body {
       font-family: var(--font-handwriting);
-      font-size: clamp(18px, 2.1vw, 26px);
-      line-height: 1.6;
+      font-size: clamp(14px, 1.5vw + 0.6vh, 25px);
+      line-height: 1.55;
       color: #3d164d;
       font-weight: 700;
       flex-grow: 1;
     }
     .letter-body p {
-      margin-bottom: 10px;
+      margin-bottom: clamp(6px, 1vh, 10px);
       opacity: 1;
     }
     .letter-signature {
-      margin-top: 14px;
+      margin-top: clamp(8px, 1.5vh, 14px);
       text-align: right;
       display: flex;
       flex-direction: column;
       align-items: flex-end;
     }
     .letter-signature .sig-tag {
-      font-size: clamp(14px, 1.5vw, 18px);
+      font-size: clamp(11px, 1.1vw + 0.4vh, 17px);
       color: #666;
       font-family: var(--font-main);
     }
     .letter-signature .sig-name {
       font-family: var(--font-main);
-      font-size: clamp(20px, 2.4vw, 30px);
+      font-size: clamp(16px, 1.8vw + 0.7vh, 28px);
       font-weight: 900;
       color: #ff3b75;
       margin-top: 2px;
     }
 
     .letter-footer {
-      margin-top: 16px;
+      margin-top: clamp(10px, 1.8vh, 16px);
       display: flex;
       justify-content: center;
       flex-shrink: 0;
@@ -1183,8 +1216,8 @@
       color: white;
       border: none;
       border-radius: 50px;
-      padding: 12px 36px;
-      font-size: clamp(14px, 1.6vw, 18px);
+      padding: clamp(10px, 1.4vh, 14px) clamp(24px, 3.2vw, 40px);
+      font-size: clamp(12px, 1.3vw + 0.5vh, 18px);
       font-weight: 800;
       cursor: pointer;
       box-shadow: 0 8px 25px rgba(255, 59, 117, 0.4);
@@ -1271,3 +1304,239 @@
     .wingR { transform-origin: 12% 60%; animation: flapR 2.6s ease-in-out infinite; }
     @keyframes flapL { 0%,100%{ transform:rotate(0deg); } 50%{ transform:rotate(-12deg); } }
     @keyframes flapR { 0%,100%{ transform:rotate(0deg); } 50%{ transform:rotate(12deg); } }
+
+    /* ============================
+       RESPONSIVE MEDIA QUERIES (MOBILE & TABLET ADJUSTMENTS)
+    ============================ */
+
+    @keyframes bowFlyInMobile {
+      0% { transform: translate(-180px, 90px) rotate(0deg); opacity: 0; }
+      100% { transform: translate(0, 0) rotate(32deg); opacity: 1; }
+    }
+
+    @media (max-width: 768px) {
+      .scene {
+        padding: 20px 12px;
+      }
+
+      /* Disable heavy backdrop-filter blur for 60FPS performance on low-end mobile CPUs */
+      .intro-badge, .msg-bubble, .hb-from, .cake-badge, .balloon-badge, .letter-card {
+        -webkit-backdrop-filter: none !important;
+        backdrop-filter: none !important;
+      }
+
+      /* Hardware accelerate active scene elements */
+      .scene, .archery-box, .arrow-svg, .emerging-heart, .balloon-item, .cake-stage, #letterCard {
+        will-change: transform, opacity;
+        transform: translateZ(0);
+      }
+
+      /* Reduce ambient blur radius for budget GPU shaders */
+      #scene-intro::before, #scene-cake::before, #scene-letter::before {
+        filter: blur(25px) !important;
+        width: 300px !important;
+        height: 300px !important;
+      }
+
+      .scene.active .archery-box {
+        animation: bowFlyInMobile 1.2s cubic-bezier(0.25, 1, 0.5, 1) forwards 0.3s;
+      }
+
+      /* Scene 1 Intro Mobile */
+      .intro-time {
+        font-size: clamp(36px, 8vw + 2vh, 72px);
+      }
+      .intro-subtitle {
+        font-size: clamp(14px, 3.2vw + 0.6vh, 24px);
+      }
+
+      /* Scene 2 Gift Header Tag Mobile */
+      .gift-header-tag {
+        font-size: clamp(9px, 2.5vw, 13px);
+        letter-spacing: clamp(1px, 0.4vw, 2px);
+        text-align: center;
+        max-width: 92%;
+        margin: 0 auto;
+      }
+
+      /* Scene 2 Archery Bow & Container Positioning for Mobile */
+      .archery-wrap {
+        max-width: 100%;
+        height: clamp(320px, 48vh, 420px);
+        padding: 0 10px 10px 10px;
+      }
+
+      .archery-box {
+        top: auto;
+        bottom: clamp(50px, 9vh, 75px);
+        left: 15px;
+        width: clamp(75px, 20vw, 90px);
+      }
+
+      /* Scene 5 Cake Mobile Centering */
+      #scene-cake {
+        padding: 15px 10px;
+        justify-content: space-evenly;
+      }
+
+      .cake-title {
+        font-size: clamp(17px, 4vw + 1vh, 30px);
+      }
+
+      .cake-subtext {
+        font-size: clamp(11px, 2.5vw + 0.5vh, 16px);
+      }
+
+      .cake-wrapper-svg {
+        width: clamp(190px, 46vw, 260px);
+        height: clamp(220px, 38vh, 310px);
+      }
+
+      .velas {
+        bottom: 21.5%;
+        top: auto;
+      }
+
+      /* Scene 6 Balloons scaling & Centering for Mobile */
+      #scene-balloons {
+        padding: clamp(15px, 2.5vh, 30px) 10px;
+        justify-content: flex-start;
+      }
+
+      .balloon-title {
+        font-size: clamp(17px, 4vw + 1vh, 30px);
+      }
+
+      .balloon-subtext {
+        font-size: clamp(11px, 2.5vw + 0.5vh, 16px);
+      }
+
+      .balloons-graphic {
+        gap: clamp(5px, 1.8vw, 12px);
+        margin-top: clamp(15px, 4vh, 35px);
+        margin-bottom: 15px;
+      }
+
+      .balloon-oval {
+        width: clamp(44px, 12vw, 62px);
+        height: clamp(62px, 16vw, 85px);
+        font-size: 14px;
+      }
+
+      .balloon-string {
+        height: 30px;
+      }
+
+      .reason-card {
+        padding: 12px 16px;
+        width: 95%;
+        min-height: 85px;
+      }
+
+      .reason-text {
+        font-size: clamp(15px, 3.6vw + 0.8vh, 26px);
+      }
+
+      .balloon-bow-wrap {
+        bottom: clamp(95px, 16vh, 150px);
+        margin-left: -28px;
+        width: 56px;
+        height: 56px;
+      }
+      #balloonBowWrap .arrow-svg {
+        top: -22px;
+        margin-left: -10.5px;
+        width: 21px;
+      }
+
+      /* Scene 7 Wishes List for Mobile */
+      .wishes-card {
+        padding: 18px 14px;
+        width: 96%;
+        margin-top: 5px;
+        max-height: calc(100vh - 40px);
+        overflow-y: auto;
+      }
+
+      .wish-item {
+        font-size: clamp(12px, 2.8vw + 0.5vh, 16px);
+        padding: 8px 0;
+        gap: 6px;
+      }
+
+      .wish-delivered {
+        font-size: clamp(8px, 1.8vw, 10px);
+        padding: 3px 8px;
+        letter-spacing: 1px;
+      }
+
+      /* Scene 8 Love Letter for Mobile */
+      .letter-card {
+        padding: 14px 12px;
+        width: 96%;
+        max-height: calc(100vh - 30px);
+      }
+
+      .letter-body {
+        font-size: clamp(13px, 3vw + 0.6vh, 19px);
+        line-height: 1.5;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .gift-header-tag {
+        font-size: clamp(8px, 2.7vw, 11px);
+        letter-spacing: 1px;
+        text-align: center;
+        max-width: 95%;
+        margin: 0 auto;
+        white-space: nowrap;
+      }
+
+      .archery-box {
+        bottom: 60px;
+        left: 12px;
+        width: 80px;
+      }
+
+      .gift-headline {
+        font-size: clamp(22px, 5.5vw + 1.2vh, 36px);
+      }
+
+      .gift-box {
+        width: 140px;
+      }
+
+      .emerging-heart.active {
+        transform: translateY(-125px) scale(1.05);
+      }
+
+      .balloon-bow-wrap {
+        bottom: clamp(135px, 22vh, 205px);
+        margin-left: -27px;
+        width: 54px;
+        height: 54px;
+      }
+      #balloonBowWrap .arrow-svg {
+        top: -21px;
+        margin-left: -10px;
+        width: 20px;
+      }
+
+      @keyframes heartPulseHover {
+        0% { transform: translateY(-125px) scale(1.05) rotate(0deg); }
+        100% { transform: translateY(-135px) scale(1.1) rotate(3deg); }
+      }
+    }
+
+    @media (max-width: 1024px) and (min-width: 769px) {
+      .balloon-bow-wrap {
+        bottom: clamp(45px, 7vh, 85px);
+      }
+    }
+
+    @media (max-height: 550px) {
+      .balloon-bow-wrap {
+        bottom: clamp(10px, 2.5vh, 25px) !important;
+      }
+    }

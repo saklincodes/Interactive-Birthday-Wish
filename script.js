@@ -295,7 +295,7 @@ const TOTAL_SCENES = 8;
     "The comfort of our late-night chats & quiet moments 🌙",
     "How you remember tiny details I forgot I even said 🌸",
     "Your soft heart & how effortlessly you make me smile 💖",
-    "Because in a world full of noise, you are my home, Hayati 🌹"
+    "Because in a world full of noise, you are my home, my love 🌹"
   ];
   const balloonAimAngles = [-36, -18, 0, 18, 36];
   let currentBalloonIdx = 0;
@@ -320,36 +320,60 @@ const TOTAL_SCENES = 8;
     const bowWrap = document.getElementById('balloonBowWrap');
     const arrow = document.getElementById('balloonArrowSvg');
 
-    // 1. Aim bow smoothly at target balloon angle
-    const angle = balloonAimAngles[index] || 0;
+    // 1. Calculate dynamic real-time screen coordinates for bow & target balloon
+    const bowRect = bowWrap.getBoundingClientRect();
+    const balloonRect = targetItem.getBoundingClientRect();
+
+    const bowX = bowRect.left + bowRect.width / 2;
+    const bowY = bowRect.top + bowRect.height / 2;
+    const balloonX = balloonRect.left + balloonRect.width / 2;
+    const balloonY = balloonRect.top + balloonRect.height / 2;
+
+    const dx = balloonX - bowX;
+    const dy = balloonY - bowY;
+
+    // Exact angle in degrees (0deg = facing straight UP towards top of screen)
+    const angle = Math.atan2(dx, -dy) * (180 / Math.PI);
+    // Exact 2D Euclidean distance from bow center directly to target balloon center
+    const shootDistance = Math.sqrt(dx * dx + dy * dy);
+
+    // 2. Aim bow smoothly directly at target balloon angle
     gsap.to(bowWrap, {
       rotation: angle,
       duration: 0.25,
       ease: 'power2.out',
       onComplete: () => {
-        // 2. Shoot arrow smoothly towards balloon
+        // 3. Shoot arrow precisely along rotated trajectory straight into balloon center
         gsap.to(arrow, {
-          y: -260,
+          y: -shootDistance,
           scaleY: 1.1,
           duration: 0.22,
           ease: 'power2.in',
           onComplete: () => {
-            // 3. Instant Pop FX, Shatter Animation & GPU Particle Burst
+            // Instant Pop FX, Shatter Animation & GPU Particle Burst
             targetItem.classList.add('popping');
             setTimeout(() => targetItem.classList.add('popped'), 380);
             burstBalloonParticles(targetItem, index);
 
-            // 4. Update Reason Card with smooth animated exit-entrance transition
+            // Update Reason Card with smooth animated exit-entrance transition
             revealBalloonReasonCard(index);
 
-            // 5. Reset arrow & prepare bow for next balloon
+            // Reset arrow & prepare bow for next balloon
             gsap.set(arrow, { y: 0, scaleY: 1 });
             isBalloonShooting = false;
             currentBalloonIdx = index + 1;
 
             if (currentBalloonIdx < 5) {
-              const nextAngle = balloonAimAngles[currentBalloonIdx];
-              gsap.to(bowWrap, { rotation: nextAngle, duration: 0.35, delay: 0.15, ease: 'power2.inOut' });
+              const nextTarget = document.getElementById(`bItem-${currentBalloonIdx}`);
+              if (nextTarget) {
+                const nextRect = nextTarget.getBoundingClientRect();
+                const nextX = nextRect.left + nextRect.width / 2;
+                const curBowRect = bowWrap.getBoundingClientRect();
+                const curBowX = curBowRect.left + curBowRect.width / 2;
+                const curBowY = curBowRect.top + curBowRect.height / 2;
+                const nextAngle = Math.atan2(nextX - curBowX, -(nextY - curBowY)) * (180 / Math.PI);
+                gsap.to(bowWrap, { rotation: nextAngle, duration: 0.35, delay: 0.15, ease: 'power2.inOut' });
+              }
             } else {
               triggerBalloonConfettiShower(); // Grand Finale Confetti!
               gsap.to(bowWrap, { opacity: 0, scale: 0.5, duration: 0.4 });
@@ -364,8 +388,9 @@ const TOTAL_SCENES = 8;
 
   function createReasonSparkles(cardEl, color) {
     if (!cardEl) return;
+    const isMobile = window.innerWidth <= 768;
     const rect = cardEl.getBoundingClientRect();
-    const sparklesCount = 10;
+    const sparklesCount = isMobile ? 4 : 10;
     const symbols = ['✨', '💖', '⭐', '🌸', '✨'];
 
     for (let i = 0; i < sparklesCount; i++) {
@@ -377,6 +402,8 @@ const TOTAL_SCENES = 8;
       sparkle.style.left = `${startX}px`;
       sparkle.style.top = `${startY}px`;
       sparkle.style.color = color || '#ff4081';
+      sparkle.style.willChange = 'transform, opacity';
+      sparkle.style.transform = 'translateZ(0)';
       document.body.appendChild(sparkle);
 
       const angle = Math.random() * Math.PI * 2;
@@ -392,7 +419,7 @@ const TOTAL_SCENES = 8;
           scale: 1.2 + Math.random() * 0.6,
           opacity: 0,
           rotation: Math.random() * 180 - 90,
-          duration: 0.75 + Math.random() * 0.45,
+          duration: 0.65 + Math.random() * 0.35,
           ease: 'power2.out',
           onComplete: () => sparkle.remove()
         }
@@ -433,8 +460,8 @@ const TOTAL_SCENES = 8;
         '-=0.35'
       )
       .fromTo(textEl,
-        { y: 20, opacity: 0, scale: 0.88, filter: 'blur(8px)', rotateX: -25 },
-        { y: 0, opacity: 1, scale: 1, filter: 'blur(0px)', rotateX: 0, duration: 0.5, ease: 'back.out(1.7)' },
+        { y: 20, opacity: 0, scale: 0.88, rotateX: -25 },
+        { y: 0, opacity: 1, scale: 1, rotateX: 0, duration: 0.5, ease: 'back.out(1.7)' },
         '-=0.3'
       );
       
@@ -445,9 +472,9 @@ const TOTAL_SCENES = 8;
 
       const tl = gsap.timeline();
       
-      // 1. Exit old content with blur & tilt + card squeeze
+      // 1. Exit old content with tilt + card squeeze
       tl.to(labelEl, { y: -12, opacity: 0, scale: 0.85, duration: 0.16, ease: 'power2.in' })
-        .to(textEl, { y: -22, opacity: 0, scale: 0.9, filter: 'blur(8px)', rotateX: 25, duration: 0.2, ease: 'power2.in' }, '-=0.14')
+        .to(textEl, { y: -22, opacity: 0, scale: 0.9, rotateX: 25, duration: 0.2, ease: 'power2.in' }, '-=0.14')
         .to(cardEl, { scaleX: 0.94, scaleY: 1.06, duration: 0.18, ease: 'power2.inOut' }, '-=0.18')
 
       // 2. Update content & theme color at mid-point
@@ -472,8 +499,8 @@ const TOTAL_SCENES = 8;
           '-=0.35'
         )
         .fromTo(textEl,
-          { y: 25, opacity: 0, scale: 0.85, filter: 'blur(8px)', rotateX: -25 },
-          { y: 0, opacity: 1, scale: 1, filter: 'blur(0px)', rotateX: 0, duration: 0.5, ease: 'back.out(1.7)' },
+          { y: 25, opacity: 0, scale: 0.85, rotateX: -25 },
+          { y: 0, opacity: 1, scale: 1, rotateX: 0, duration: 0.5, ease: 'back.out(1.7)' },
           '-=0.32'
         );
 
@@ -483,6 +510,7 @@ const TOTAL_SCENES = 8;
   }
 
   function burstBalloonParticles(item, index) {
+    const isMobile = window.innerWidth <= 768;
     const balloonColorsList = ['#ff6b9d', '#a29bfe', '#4ecdc4', '#f5c863', '#ff7675'];
     const rect = item.getBoundingClientRect();
     const container = document.getElementById('scene-balloons');
@@ -502,26 +530,28 @@ const TOTAL_SCENES = 8;
     const flash = document.createElement('div');
     flash.style.cssText = `
       position: fixed;
-      left: ${centerX - 120}px;
-      top: ${centerY - 120}px;
-      width: 240px;
-      height: 240px;
+      left: ${centerX - 100}px;
+      top: ${centerY - 100}px;
+      width: 200px;
+      height: 200px;
       border-radius: 50%;
       pointer-events: none;
       z-index: 90;
       background: radial-gradient(circle, ${balloonColor} 0%, rgba(255,255,255,0.85) 50%, transparent 75%);
-      opacity: 0.95;
+      opacity: 0.9;
+      transform: translateZ(0);
     `;
     container.appendChild(flash);
-    gsap.to(flash, { opacity: 0, scale: 2, duration: 0.38, ease: 'power2.out', onComplete: () => flash.remove() });
+    gsap.to(flash, { opacity: 0, scale: 1.8, duration: 0.3, ease: 'power2.out', onComplete: () => flash.remove() });
 
     // 2. Torn Rubber Shards Exploding Out From Balloon Center
-    for (let i = 0; i < 8; i++) {
+    const shardCount = isMobile ? 4 : 8;
+    for (let i = 0; i < shardCount; i++) {
       const shard = document.createElement('div');
-      const angle = (i / 8) * Math.PI * 2 + (Math.random() * 0.5 - 0.25);
-      const dist = 60 + Math.random() * 110;
-      const shardWidth = 8 + Math.random() * 12;
-      const shardHeight = 12 + Math.random() * 16;
+      const angle = (i / shardCount) * Math.PI * 2 + (Math.random() * 0.5 - 0.25);
+      const dist = 50 + Math.random() * 90;
+      const shardWidth = 8 + Math.random() * 10;
+      const shardHeight = 10 + Math.random() * 14;
 
       shard.style.cssText = `
         position: fixed;
@@ -535,57 +565,60 @@ const TOTAL_SCENES = 8;
         pointer-events: none;
         z-index: 98;
         will-change: transform, opacity;
+        transform: translateZ(0);
       `;
       container.appendChild(shard);
 
       gsap.to(shard, {
         x: Math.cos(angle) * dist,
-        y: Math.sin(angle) * dist + 40,
-        rotation: (Math.random() - 0.5) * 720,
+        y: Math.sin(angle) * dist + 30,
+        rotation: (Math.random() - 0.5) * 540,
         scale: 0.1,
         opacity: 0,
-        duration: 0.55 + Math.random() * 0.2,
+        duration: 0.45 + Math.random() * 0.2,
         ease: 'power2.out',
         onComplete: () => shard.remove()
       });
     }
 
-    // 3. 60FPS Ultra-Smooth 360° Burst (24 GPU Accelerated Nodes)
-    const emojis = ['🎈', '💥', '✨', '🌸', '💖', '🎉', '⚡', '🌟', '🧁', '💘', '⭐', '🎀', '💫', '🥳', '🎊', '🎁'];
-    const celebrationColors = [balloonColor, '#ffffff', '#ffd700', '#ff4081', '#00e5ff', '#ab47bc', '#ff9100', '#00e676'];
+    // 3. 60FPS Ultra-Smooth 360° Burst
+    const nodeCount = isMobile ? 10 : 24;
+    const emojis = ['🎈', '💥', '✨', '🌸', '💖', '🎉', '⚡', '🌟', '🥳', '🎊'];
+    const celebrationColors = [balloonColor, '#ffffff', '#ffd700', '#ff4081', '#00e5ff'];
 
     const fragment = document.createDocumentFragment();
     const particleNodes = [];
 
-    for (let i = 0; i < 24; i++) {
+    for (let i = 0; i < nodeCount; i++) {
       const p = document.createElement('div');
       const isEmoji = i % 2 === 0;
-      const angle = (i / 24) * Math.PI * 2 + (Math.random() * 0.4 - 0.2);
-      const dist = 100 + Math.random() * 180;
+      const angle = (i / nodeCount) * Math.PI * 2 + (Math.random() * 0.4 - 0.2);
+      const dist = (isMobile ? 70 : 100) + Math.random() * (isMobile ? 90 : 140);
       const particleColor = celebrationColors[Math.floor(Math.random() * celebrationColors.length)];
 
       if (isEmoji) {
         p.style.cssText = `
           position: fixed;
           left: ${centerX}px; top: ${centerY}px;
-          font-size: ${20 + Math.random() * 16}px;
+          font-size: ${isMobile ? 16 : 22}px;
           pointer-events: none;
           z-index: 100;
           will-change: transform, opacity;
+          transform: translateZ(0);
         `;
         p.innerText = emojis[Math.floor(Math.random() * emojis.length)];
       } else {
-        const size = 7 + Math.random() * 9;
+        const size = (isMobile ? 5 : 7) + Math.random() * 6;
         p.style.cssText = `
           position: fixed;
           left: ${centerX}px; top: ${centerY}px;
           width: ${size}px; height: ${size}px;
           background: ${particleColor};
           border-radius: 50%;
-          box-shadow: 0 0 10px ${particleColor};
           pointer-events: none;
           z-index: 100;
           will-change: transform, opacity;
+          transform: translateZ(0);
         `;
       }
 
@@ -593,9 +626,9 @@ const TOTAL_SCENES = 8;
       particleNodes.push({
         el: p,
         x: Math.cos(angle) * dist,
-        y: Math.sin(angle) * dist + 20,
-        rotation: (Math.random() - 0.5) * 540,
-        scale: Math.random() * 0.5 + 0.5
+        y: Math.sin(angle) * dist + 15,
+        rotation: (Math.random() - 0.5) * 360,
+        scale: Math.random() * 0.4 + 0.6
       });
     }
 
@@ -609,7 +642,7 @@ const TOTAL_SCENES = 8;
         rotation: item.rotation,
         scale: 0.15,
         opacity: 0,
-        duration: 0.75 + Math.random() * 0.3,
+        duration: 0.6 + Math.random() * 0.25,
         ease: 'power2.out',
         onComplete: () => item.el.remove()
       });
@@ -619,35 +652,38 @@ const TOTAL_SCENES = 8;
   function spawnFallingConfettiShower(centerX, centerY) {
     const container = document.getElementById('scene-balloons');
     if (!container) return;
-    const icons = ['✨', '💖', '🌸', '⭐', '💫', '🎉', '💘', '🧁', '🎈', '🎀'];
+    const isMobile = window.innerWidth <= 768;
+    const icons = ['✨', '💖', '🌸', '⭐', '🎉', '🎈'];
     const colors = ['#ff6b9d', '#ffd700', '#00e5ff', '#ab47bc', '#ff4081', '#ffffff'];
     const fragment = document.createDocumentFragment();
     const elementsToRemove = [];
+    const count = isMobile ? 6 : 16;
 
-    for (let i = 0; i < 16; i++) {
+    for (let i = 0; i < count; i++) {
       const p = document.createElement('div');
       p.className = 'falling-celebration-particle';
-      const isEmoji = Math.random() > 0.4;
-      const offsetX = (Math.random() - 0.5) * 260;
-      const offsetY = (Math.random() - 0.5) * 60;
-      const floatDur = 3.5 + Math.random() * 2.2;
-      const delay = Math.random() * 0.4;
+      const isEmoji = Math.random() > 0.5;
+      const offsetX = (Math.random() - 0.5) * (isMobile ? 180 : 260);
+      const offsetY = (Math.random() - 0.5) * 40;
+      const floatDur = (isMobile ? 2.5 : 3.5) + Math.random() * 1.5;
+      const delay = Math.random() * 0.3;
       const color = colors[Math.floor(Math.random() * colors.length)];
 
       if (isEmoji) {
-        const size = 18 + Math.random() * 18;
+        const size = (isMobile ? 14 : 18) + Math.random() * 12;
         p.style.cssText = `
           left: ${centerX + offsetX}px;
           top: ${centerY + offsetY}px;
           font-size: ${size}px;
           animation-duration: ${floatDur}s;
           animation-delay: ${delay}s;
-          filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));
+          will-change: transform, opacity;
+          transform: translateZ(0);
         `;
         p.innerHTML = icons[Math.floor(Math.random() * icons.length)];
       } else {
-        const w = 6 + Math.random() * 6;
-        const h = 14 + Math.random() * 16;
+        const w = 5 + Math.random() * 5;
+        const h = 10 + Math.random() * 12;
         p.style.cssText = `
           left: ${centerX + offsetX}px;
           top: ${centerY + offsetY}px;
@@ -657,7 +693,8 @@ const TOTAL_SCENES = 8;
           border-radius: 3px;
           animation-duration: ${floatDur}s;
           animation-delay: ${delay}s;
-          box-shadow: 0 0 8px ${color};
+          will-change: transform, opacity;
+          transform: translateZ(0);
         `;
       }
       fragment.appendChild(p);
@@ -668,38 +705,43 @@ const TOTAL_SCENES = 8;
 
     setTimeout(() => {
       elementsToRemove.forEach(el => el.remove());
-    }, 6000);
+    }, 4500);
   }
 
   function triggerBalloonConfettiShower() {
     const container = document.getElementById('balloonConfetti');
     if (!container) return;
     container.innerHTML = '';
-    const colors = ['#ff6b9d', '#ffd700', '#00e5c8', '#ff8c42', '#ffffff', '#a29bfe', '#ff7675', '#00e676'];
+    const isMobile = window.innerWidth <= 768;
+    const colors = ['#ff6b9d', '#ffd700', '#00e5c8', '#ff8c42', '#ffffff', '#a29bfe'];
     const fragment = document.createDocumentFragment();
+    const count = isMobile ? 20 : 70;
 
-    for (let i = 0; i < 75; i++) {
+    for (let i = 0; i < count; i++) {
       const piece = document.createElement('div');
       piece.className = 'confetti-piece';
       const color = colors[Math.floor(Math.random() * colors.length)];
       const left = Math.random() * 100;
-      const duration = 1.6 + Math.random() * 2.2;
-      const delay = Math.random() * 0.8;
-      const width = 10 + Math.random() * 8;
-      const height = 8 + Math.random() * 6;
+      const duration = 1.5 + Math.random() * 1.8;
+      const delay = Math.random() * 0.5;
+      const width = isMobile ? (7 + Math.random() * 5) : (10 + Math.random() * 8);
+      const height = isMobile ? (6 + Math.random() * 4) : (8 + Math.random() * 6);
 
       piece.style.cssText = `
         position: absolute;
         left: ${left}%;
-        top: ${Math.random() * -30}%;
+        top: ${Math.random() * -20}%;
         width: ${width}px;
         height: ${height}px;
         background: ${color};
         border-radius: 3px;
         opacity: 0.9;
-        animation: confettiFall ${duration}s linear infinite ${delay}s;
+        will-change: transform;
+        transform: translateZ(0);
+        animation: confettiFall ${duration}s linear 1 ${delay}s forwards;
       `;
       fragment.appendChild(piece);
+      setTimeout(() => piece.remove(), (duration + delay) * 1000 + 200);
     }
     container.appendChild(fragment);
   }
@@ -709,7 +751,7 @@ const TOTAL_SCENES = 8;
     0, // Scene 0 (Dark Intro): Tap to advance
     0, // Scene 1 (Gift Box & Archery)
     0, // Scene 2 (Cupid Unties): Tap to advance
-    0, // Scene 3 (Happy Birthday Hayati Burst): Tap to advance
+    0, // Scene 3 (Happy Birthday My Love Burst): Tap to advance
     0, // Scene 4 (Gourmet Animated SVG Cake)
     0, // Scene 5 (Balloons)
     0, // Scene 6 (Wishes List)
@@ -738,18 +780,18 @@ const TOTAL_SCENES = 8;
           { y: 0, opacity: 1, scale: 1, letterSpacing: '4px', duration: 0.7, ease: 'back.out(1.8)' }
         )
         .fromTo('.intro-time-wrap',
-          { scale: 0.55, opacity: 0, y: -20, filter: 'blur(10px)' },
-          { scale: 1, opacity: 1, y: 0, filter: 'blur(0px)', duration: 0.85, ease: 'back.out(1.6)' },
+          { scale: 0.55, opacity: 0, y: -20 },
+          { scale: 1, opacity: 1, y: 0, duration: 0.85, ease: 'back.out(1.6)' },
           '-=0.45'
         )
         .fromTo('.intro-subtitle',
-          { opacity: 0, y: 25, filter: 'blur(8px)' },
-          { opacity: 1, y: 0, filter: 'blur(0px)', duration: 0.75, ease: 'power3.out' },
+          { opacity: 0, y: 25 },
+          { opacity: 1, y: 0, duration: 0.75, ease: 'power3.out' },
           '-=0.4'
         )
         .fromTo('.msg-bubble',
-          { scale: 0.75, opacity: 0, y: 30, filter: 'blur(6px)' },
-          { scale: 1, opacity: 1, y: 0, filter: 'blur(0px)', duration: 0.8, ease: 'back.out(2)' },
+          { scale: 0.75, opacity: 0, y: 30 },
+          { scale: 1, opacity: 1, y: 0, duration: 0.8, ease: 'back.out(2)' },
           '-=0.3'
         );
     } else if (n === 1) {
@@ -763,16 +805,16 @@ const TOTAL_SCENES = 8;
         .fromTo('#scene-open .top-pill', { y: -50, opacity: 0 }, { y: 0, opacity: 1, duration: 0.7, ease: 'back.out(1.5)' })
         .fromTo('#scene-open .heart-3d', { scale: 0, opacity: 0, rotate: -20 }, { scale: 1, opacity: 1, rotate: 0, duration: 0.9, ease: 'elastic.out(1.2, 0.4)' }, '-=0.3');
     } else if (n === 3) {
-      // Scene 3: Happy Birthday Hayati Burst (MAJOR KINETIC SHOWCASE)
+      // Scene 3: Happy Birthday My Love Burst (MAJOR KINETIC SHOWCASE)
       initConfetti();
       gsap.timeline()
         .fromTo('.hb-main', 
-          { scale: 0.3, opacity: 0, rotateX: -65, y: -50, letterSpacing: '-6px', filter: 'blur(12px)' },
-          { scale: 1, opacity: 1, rotateX: 0, y: 0, letterSpacing: '4px', filter: 'blur(0px)', duration: 0.9, ease: 'back.out(1.8)' }
+          { scale: 0.3, opacity: 0, rotateX: -65, y: -50, letterSpacing: '-6px' },
+          { scale: 1, opacity: 1, rotateX: 0, y: 0, letterSpacing: '4px', duration: 0.9, ease: 'back.out(1.8)' }
         )
         .fromTo('.hb-name',
-          { scale: 0.15, opacity: 0, rotate: -14, y: 40, filter: 'blur(20px)' },
-          { scale: 1, opacity: 1, rotate: 0, y: 0, filter: 'blur(0px)', duration: 1.15, ease: 'elastic.out(1.25, 0.4)' },
+          { scale: 0.15, opacity: 0, rotate: -14, y: 40 },
+          { scale: 1, opacity: 1, rotate: 0, y: 0, duration: 1.15, ease: 'elastic.out(1.25, 0.4)' },
           '-=0.45'
         )
         .fromTo('.hb-from',
@@ -792,8 +834,8 @@ const TOTAL_SCENES = 8;
           { y: 0, opacity: 1, scale: 1, letterSpacing: '3px', duration: 0.75, ease: 'back.out(1.8)' }
         )
         .fromTo('#scene-cake .cake-title',
-          { y: 30, opacity: 0, scale: 0.88, filter: 'blur(10px)' },
-          { y: 0, opacity: 1, scale: 1, filter: 'blur(0px)', duration: 0.85, ease: 'back.out(1.5)' },
+          { y: 30, opacity: 0, scale: 0.88 },
+          { y: 0, opacity: 1, scale: 1, duration: 0.85, ease: 'back.out(1.5)' },
           '-=0.45'
         )
         .fromTo('#scene-cake .cake-subtext',
@@ -814,8 +856,8 @@ const TOTAL_SCENES = 8;
           { y: 0, opacity: 1, scale: 1, letterSpacing: '3px', duration: 0.7, ease: 'back.out(1.8)' }
         )
         .fromTo('#scene-balloons .balloon-title',
-          { y: 25, opacity: 0, scale: 0.9, filter: 'blur(8px)' },
-          { y: 0, opacity: 1, scale: 1, filter: 'blur(0px)', duration: 0.8, ease: 'back.out(1.5)' },
+          { y: 25, opacity: 0, scale: 0.9 },
+          { y: 0, opacity: 1, scale: 1, duration: 0.8, ease: 'back.out(1.5)' },
           '-=0.45'
         )
         .fromTo('#scene-balloons .balloon-subtext',
@@ -828,6 +870,22 @@ const TOTAL_SCENES = 8;
         const cardEl = document.getElementById('balloonReasonCard');
         cardEl.style.display = 'none';
         gsap.set(cardEl, { opacity: 0 });
+
+        // Calculate dynamic real-time screen angle to balloon 0 on entrance
+        setTimeout(() => {
+          const bowWrap = document.getElementById('balloonBowWrap');
+          const firstTarget = document.getElementById('bItem-0');
+          if (bowWrap && firstTarget) {
+            const bowRect = bowWrap.getBoundingClientRect();
+            const firstRect = firstTarget.getBoundingClientRect();
+            const bowX = bowRect.left + bowRect.width / 2;
+            const bowY = bowRect.top + bowRect.height / 2;
+            const firstX = firstRect.left + firstRect.width / 2;
+            const firstY = firstRect.top + firstRect.height / 2;
+            const initialAngle = Math.atan2(firstX - bowX, -(firstY - bowY)) * (180 / Math.PI);
+            gsap.to(bowWrap, { rotation: initialAngle, duration: 0.4, ease: 'power2.out' });
+          }
+        }, 100);
       }
     } else if (n === 6) {
       // Scene 6: Wishes List (AUTHENTIC POSTAL STAMP IMPACT ANIMATION)
@@ -841,7 +899,7 @@ const TOTAL_SCENES = 8;
       gsap.set(cardEl, { scale: 0.82, opacity: 0, y: 35 });
       gsap.set('.wishes-card-title', { opacity: 0, y: -15, letterSpacing: '1px' });
       gsap.set(wishItems, { x: -40, opacity: 0 });
-      gsap.set(wishStamps, { scale: 2.8, opacity: 0, rotate: 25, filter: 'blur(8px)' });
+      gsap.set(wishStamps, { scale: 2.8, opacity: 0, rotate: 25 });
 
       const tl = gsap.timeline();
       tl.to(cardEl, { scale: 1, opacity: 1, y: 0, duration: 0.75, ease: 'back.out(1.5)' })
@@ -863,7 +921,6 @@ const TOTAL_SCENES = 8;
           scale: 1,
           opacity: 1,
           rotate: idx % 2 === 0 ? -6 : -3,
-          filter: 'blur(0px)',
           duration: 0.4,
           ease: 'back.out(2.8)'
         }, '-=0.15');
@@ -912,15 +969,19 @@ const TOTAL_SCENES = 8;
 
   function createFireworkExplosion(x, y, particleCount = 35, colorTheme = 'gold') {
     if (!finaleCtx || !finaleCanvas) return;
+    const isMobile = window.innerWidth <= 768;
 
     const palette = [
       '#ffd700', '#ff3b75', '#00e5c8', '#a29bfe', '#ff7675', 
       '#ffffff', '#ff9100', '#e040fb', '#00e676', '#ff1744'
     ];
 
+    const actualCount = isMobile ? Math.min(particleCount, 16) : particleCount;
+    const maxParticles = isMobile ? 60 : 140;
+
     // Limit active particles to prevent lag
-    if (finaleParticles.length > 140) {
-      finaleParticles.splice(0, 40);
+    if (finaleParticles.length > maxParticles) {
+      finaleParticles.splice(0, isMobile ? 20 : 40);
     }
 
     // Add Shockwave Ring Particle
@@ -929,17 +990,17 @@ const TOTAL_SCENES = 8;
       x: x,
       y: y,
       radius: 4,
-      maxRadius: 140 + Math.random() * 50,
+      maxRadius: (isMobile ? 80 : 140) + Math.random() * 30,
       color: colorTheme === 'gold' ? '#ffd700' : '#ff3b75',
       alpha: 1,
-      lineWidth: 5
+      lineWidth: isMobile ? 3 : 5
     });
 
     // Add Sparks
-    for (let i = 0; i < particleCount; i++) {
+    for (let i = 0; i < actualCount; i++) {
       const angle = Math.random() * Math.PI * 2;
-      const speed = 3 + Math.random() * 9;
-      const size = 2.5 + Math.random() * 3.5;
+      const speed = (isMobile ? 2 : 3) + Math.random() * (isMobile ? 6 : 9);
+      const size = (isMobile ? 2 : 2.5) + Math.random() * (isMobile ? 2.5 : 3.5);
       const color = palette[Math.floor(Math.random() * palette.length)];
 
       finaleParticles.push({
@@ -953,34 +1014,37 @@ const TOTAL_SCENES = 8;
         size: size,
         color: color,
         alpha: 1,
-        decay: 0.018 + Math.random() * 0.02
+        decay: 0.02 + Math.random() * 0.02
       });
     }
 
-    // Lightweight Floating Emojis (4 per blast)
+    // Lightweight Floating Emojis (2 on mobile, 4 on desktop per blast)
+    const emojiCount = isMobile ? 2 : 4;
     const emojis = ['💥', '✨', '💖', '⭐', '🎆', '🌹'];
-    for (let i = 0; i < 4; i++) {
+    for (let i = 0; i < emojiCount; i++) {
       const p = document.createElement('div');
       p.className = 'bomb-blast-emoji';
       p.textContent = emojis[Math.floor(Math.random() * emojis.length)];
       p.style.left = `${x}px`;
       p.style.top = `${y}px`;
-      p.style.fontSize = `${20 + Math.random() * 18}px`;
+      p.style.fontSize = `${isMobile ? 16 : 20}px`;
+      p.style.willChange = 'transform, opacity';
+      p.style.transform = 'translateZ(0)';
       document.body.appendChild(p);
 
       const angle = Math.random() * Math.PI * 2;
-      const dist = 60 + Math.random() * 100;
+      const dist = (isMobile ? 40 : 60) + Math.random() * (isMobile ? 60 : 100);
       const targetX = Math.cos(angle) * dist;
-      const targetY = Math.sin(angle) * dist - 25;
+      const targetY = Math.sin(angle) * dist - 20;
 
       gsap.fromTo(p,
         { scale: 0.2, opacity: 1, x: 0, y: 0 },
         {
           x: targetX,
           y: targetY,
-          scale: 1.3,
+          scale: 1.2,
           opacity: 0,
-          duration: 0.9 + Math.random() * 0.4,
+          duration: 0.75 + Math.random() * 0.35,
           ease: 'power2.out',
           onComplete: () => p.remove()
         }
@@ -1052,6 +1116,7 @@ const TOTAL_SCENES = 8;
     initGrandFinaleCanvas();
     finaleParticles = [];
 
+    const isMobile = window.innerWidth <= 768;
     const flash = document.getElementById('grandFinaleFlash');
     if (flash) {
       gsap.killTweensOf(flash);
@@ -1071,7 +1136,10 @@ const TOTAL_SCENES = 8;
     const width = window.innerWidth || 1000;
     const height = window.innerHeight || 800;
 
-    const blastPoints = [
+    const blastPoints = isMobile ? [
+      { x: width * 0.5, y: height * 0.35 },
+      { x: width * 0.5, y: height * 0.65 }
+    ] : [
       { x: width * 0.5, y: height * 0.38 }, // Center
       { x: width * 0.25, y: height * 0.25 }, // Left
       { x: width * 0.75, y: height * 0.25 }, // Right
@@ -1080,11 +1148,11 @@ const TOTAL_SCENES = 8;
 
     blastPoints.forEach((pt, index) => {
       setTimeout(() => {
-        createFireworkExplosion(pt.x, pt.y, 35, index % 2 === 0 ? 'gold' : 'pink');
+        createFireworkExplosion(pt.x, pt.y, isMobile ? 16 : 35, index % 2 === 0 ? 'gold' : 'pink');
         if (!finaleAnimId) {
           renderGrandFinaleAnimation();
         }
-      }, index * 120);
+      }, index * (isMobile ? 180 : 120));
     });
   }
 
@@ -1094,18 +1162,20 @@ const TOTAL_SCENES = 8;
     const container = document.getElementById('letterConfetti');
     if (!container) return;
     container.innerHTML = '';
+    const isMobile = window.innerWidth <= 768;
     const colors = ['#ff6b9d', '#ffd700', '#00e5c8', '#ff8c42', '#ffffff', '#a29bfe'];
     const fragment = document.createDocumentFragment();
+    const count = isMobile ? 16 : 40;
 
-    for (let i = 0; i < 40; i++) {
+    for (let i = 0; i < count; i++) {
       const piece = document.createElement('div');
       piece.className = 'confetti-piece';
       const color = colors[Math.floor(Math.random() * colors.length)];
       const left = Math.random() * 100;
-      const duration = 2.0 + Math.random() * 2.0;
-      const delay = Math.random() * 0.5;
-      const width = 10 + Math.random() * 6;
-      const height = 8 + Math.random() * 5;
+      const duration = 1.8 + Math.random() * 1.8;
+      const delay = Math.random() * 0.4;
+      const width = isMobile ? (7 + Math.random() * 5) : (10 + Math.random() * 6);
+      const height = isMobile ? (6 + Math.random() * 4) : (8 + Math.random() * 5);
 
       piece.style.cssText = `
         position: absolute;
@@ -1117,6 +1187,7 @@ const TOTAL_SCENES = 8;
         border-radius: 3px;
         opacity: 0.95;
         will-change: transform;
+        transform: translateZ(0);
         animation: confettiFall ${duration}s linear 1 ${delay}s forwards;
       `;
       fragment.appendChild(piece);
@@ -1130,7 +1201,10 @@ const TOTAL_SCENES = 8;
   function startGrandFinaleAmbientLoop() {
     stopGrandFinaleAmbientLoop();
 
-    // Loop every 2.8 seconds: Shoot a mini fireworks blast + gentle confetti drop!
+    const isMobile = window.innerWidth <= 768;
+    const intervalMs = isMobile ? 4500 : 2800;
+
+    // Loop: Shoot a mini fireworks blast + gentle confetti drop!
     finaleAmbientTimer = setInterval(() => {
       if (currentScene !== 7) {
         stopGrandFinaleAmbientLoop();
@@ -1144,13 +1218,13 @@ const TOTAL_SCENES = 8;
       const ry = height * (0.15 + Math.random() * 0.45);
       const color = Math.random() > 0.5 ? 'gold' : 'pink';
 
-      createFireworkExplosion(rx, ry, 22, color);
+      createFireworkExplosion(rx, ry, isMobile ? 12 : 22, color);
       if (!finaleAnimId) {
         renderGrandFinaleAnimation();
       }
 
       spawnAmbientConfetti();
-    }, 2800);
+    }, intervalMs);
   }
 
   function stopGrandFinaleAmbientLoop() {
@@ -1164,10 +1238,12 @@ const TOTAL_SCENES = 8;
     const container = document.getElementById('letterConfetti');
     if (!container || currentScene !== 7) return;
 
+    const isMobile = window.innerWidth <= 768;
     const colors = ['#ff6b9d', '#ffd700', '#00e5c8', '#ff8c42', '#ffffff', '#a29bfe'];
     const fragment = document.createDocumentFragment();
+    const count = isMobile ? 3 : 5;
 
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < count; i++) {
       const piece = document.createElement('div');
       piece.className = 'confetti-piece';
       const color = colors[Math.floor(Math.random() * colors.length)];
@@ -1178,12 +1254,13 @@ const TOTAL_SCENES = 8;
         position: absolute;
         left: ${left}%;
         top: -15px;
-        width: ${8 + Math.random() * 6}px;
-        height: ${7 + Math.random() * 5}px;
+        width: ${isMobile ? 6 : 8}px;
+        height: ${isMobile ? 5 : 7}px;
         background: ${color};
         border-radius: 3px;
         opacity: 0.9;
         will-change: transform;
+        transform: translateZ(0);
         animation: confettiFall ${duration}s linear 1 forwards;
       `;
       fragment.appendChild(piece);
@@ -1295,5 +1372,9 @@ const TOTAL_SCENES = 8;
     }
   });
 
-  // Start at intro scene
-  goToScene(0);
+  // Start at intro scene on DOMReady
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => goToScene(0));
+  } else {
+    goToScene(0);
+  }
