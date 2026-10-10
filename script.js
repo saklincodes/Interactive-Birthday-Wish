@@ -126,13 +126,19 @@ const TOTAL_SCENES = 8;
       setTimeout(shootArcheryArrow, 700);
       return;
     }
-    isArrowShot = true; // Mark arrow as shot
+    isArrowShot = true;
+
+    // Disable CSS keyframe shadow animation on impact to prevent GPU rasterization lock
+    const heartEl = document.getElementById('emergingHeart');
+    if (heartEl) {
+      heartEl.style.animation = 'none';
+    }
 
     // 1. Bow string snaps back empty
     gsap.to({ d: currentDraw }, {
       d: 0,
-      duration: 0.35,
-      ease: 'elastic.out(1, 0.34)',
+      duration: 0.22,
+      ease: 'power2.out',
       onUpdate() { updateString(this.targets()[0].d); }
     });
 
@@ -140,54 +146,41 @@ const TOTAL_SCENES = 8;
     gsap.to(arrowSvg, {
       y: -210,
       scaleY: 1.05,
-      duration: 0.28,
+      duration: 0.22,
       ease: 'power2.in',
       onComplete: () => {
-        // Arrow impact: Heart recoils & wiggles on impact!
+        // Arrow impact: Heart recoils & wiggles
         gsap.to('#emergingHeart', {
-          scale: 1.38,
-          x: 6,
-          y: '-=12',
+          scale: 1.35,
+          x: 4,
           duration: 0.08,
           ease: 'power2.out',
           onComplete: () => {
-            gsap.to('#emergingHeart', { scale: 1.25, x: 0, duration: 0.25, ease: 'power2.inOut' });
+            gsap.to('#emergingHeart', { scale: 1.25, x: 0, duration: 0.2, ease: 'power2.inOut' });
           }
         });
 
         // Arrow bursts into golden heart sparkles right at impact point!
         burstHeartParticles();
 
-        // Brief dramatic pause with arrow lodged in heart before scene zoom
+        // Brief dramatic pause before scene transition zoom
         setTimeout(() => {
           gsap.set(arrowSvg, { display: 'none', opacity: 0 });
 
-          // Gradual Fullscreen Heart Zoom Transition into Happy Birthday Scene
-          const zoomTL = gsap.timeline();
-
-          // 1. Heart expands smoothly to fill the screen
-          zoomTL.to('#emergingHeart', {
-            scale: 110,
-            duration: 1.3,
-            ease: 'power2.in',
-            delay: 0.05
-          });
-
-          // 2. Mid-way through zoom (0.75s), switch active scene to Happy Birthday
-          zoomTL.add(() => {
-            scenes[currentScene].classList.remove('active');
-            currentScene = 3; // Happy Birthday scene!
-            scenes[currentScene].classList.add('active');
-            initConfetti();
-          }, 0.75);
-
-          // 3. Dissolve zoomed heart into the Happy Birthday scene background
-          zoomTL.to('#emergingHeart', {
+          // Smooth 60 FPS Scene Transition Zoom into Happy Birthday Scene
+          gsap.to('#emergingHeart', {
+            scale: 25,
             opacity: 0,
-            duration: 0.45,
-            ease: 'power1.out'
-          }, 1.25);
-        }, 180);
+            duration: 0.65,
+            ease: 'power2.in',
+            onComplete: () => {
+              scenes[currentScene].classList.remove('active');
+              currentScene = 3; // Happy Birthday scene!
+              scenes[currentScene].classList.add('active');
+              initConfetti();
+            }
+          });
+        }, 120);
       }
     });
   }
@@ -200,40 +193,47 @@ const TOTAL_SCENES = 8;
     const centerX = rect.left + rect.width / 2;
     const centerY = rect.top + rect.height / 2;
 
-    const emojis = ['💖', '✨', '🌸', '💖', '⭐', '🌹'];
-    for (let i = 0; i < 22; i++) {
+    const emojis = ['💖', '✨', '🌸', '💖', '⭐'];
+    const fragment = document.createDocumentFragment();
+    const particles = [];
+
+    for (let i = 0; i < 14; i++) {
       const p = document.createElement('div');
       p.style.cssText = `
         position: fixed;
         left: ${centerX}px;
         top: ${centerY}px;
-        font-size: ${18 + Math.random() * 22}px;
+        font-size: ${18 + Math.random() * 18}px;
         pointer-events: none;
         z-index: 100;
         transform: translate(-50%, -50%) scale(1);
         will-change: transform, opacity;
       `;
       p.innerHTML = emojis[Math.floor(Math.random() * emojis.length)];
-      document.body.appendChild(p);
+      fragment.appendChild(p);
+      particles.push(p);
+    }
+    document.body.appendChild(fragment);
 
+    particles.forEach(p => {
       const angle = Math.random() * Math.PI * 2;
-      const dist = 70 + Math.random() * 130;
+      const dist = 60 + Math.random() * 100;
       const targetX = Math.cos(angle) * dist;
-      const targetY = Math.sin(angle) * dist - 20;
+      const targetY = Math.sin(angle) * dist - 15;
 
       gsap.fromTo(p,
         { scale: 0.2, opacity: 1, x: 0, y: 0 },
         {
           x: targetX,
           y: targetY,
-          scale: 1.3,
+          scale: 1.2,
           opacity: 0,
-          duration: 0.9 + Math.random() * 0.4,
+          duration: 0.7 + Math.random() * 0.3,
           ease: 'power2.out',
           onComplete: () => p.remove()
         }
       );
-    }
+    });
   }
 
   let isCandleExtinguished = false;
