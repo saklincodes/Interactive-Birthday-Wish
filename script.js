@@ -136,54 +136,58 @@ const TOTAL_SCENES = 8;
       onUpdate() { updateString(this.targets()[0].d); }
     });
 
-    // 2. Arrow flies independently into the heart
+    // 2. Arrow flies precisely into the heart center
     gsap.to(arrowSvg, {
-      y: -350,
-      scaleY: 1.15,
-      duration: 0.26,
+      y: -165,
+      scaleY: 1.05,
+      duration: 0.28,
       ease: 'power2.in',
       onComplete: () => {
-        // Arrow impact: Heart recoils & wiggles
+        // Arrow impact: Heart recoils & wiggles on impact!
         gsap.to('#emergingHeart', {
-          scale: 1.35,
+          scale: 1.38,
           x: 6,
-          y: '-=10',
+          y: '-=12',
           duration: 0.08,
           ease: 'power2.out',
           onComplete: () => {
-            gsap.to('#emergingHeart', { scale: 1.15, x: 0, duration: 0.25, ease: 'power2.inOut' });
+            gsap.to('#emergingHeart', { scale: 1.25, x: 0, duration: 0.25, ease: 'power2.inOut' });
           }
         });
 
-        // Arrow bursts at heart and vanishes permanently (leaving bow empty behind!)
+        // Arrow bursts into golden heart sparkles right at impact
         burstHeartParticles();
-        gsap.set(arrowSvg, { display: 'none', opacity: 0 });
 
-        // Gradual Fullscreen Heart Zoom Transition into Happy Birthday Scene
-        const zoomTL = gsap.timeline();
+        // Brief dramatic pause with arrow lodged in heart before scene zoom
+        setTimeout(() => {
+          gsap.set(arrowSvg, { display: 'none', opacity: 0 });
 
-        // 1. Heart expands smoothly to fill the screen
-        zoomTL.to('#emergingHeart', {
-          scale: 110,
-          duration: 1.3,
-          ease: 'power2.in',
-          delay: 0.05
-        });
+          // Gradual Fullscreen Heart Zoom Transition into Happy Birthday Scene
+          const zoomTL = gsap.timeline();
 
-        // 2. Mid-way through zoom (0.75s), switch active scene to Happy Birthday
-        zoomTL.add(() => {
-          scenes[currentScene].classList.remove('active');
-          currentScene = 3; // Happy Birthday scene!
-          scenes[currentScene].classList.add('active');
-          initConfetti();
-        }, 0.75);
+          // 1. Heart expands smoothly to fill the screen
+          zoomTL.to('#emergingHeart', {
+            scale: 110,
+            duration: 1.3,
+            ease: 'power2.in',
+            delay: 0.05
+          });
 
-        // 3. Dissolve zoomed heart into the Happy Birthday scene background
-        zoomTL.to('#emergingHeart', {
-          opacity: 0,
-          duration: 0.45,
-          ease: 'power1.out'
-        }, 1.25);
+          // 2. Mid-way through zoom (0.75s), switch active scene to Happy Birthday
+          zoomTL.add(() => {
+            scenes[currentScene].classList.remove('active');
+            currentScene = 3; // Happy Birthday scene!
+            scenes[currentScene].classList.add('active');
+            initConfetti();
+          }, 0.75);
+
+          // 3. Dissolve zoomed heart into the Happy Birthday scene background
+          zoomTL.to('#emergingHeart', {
+            opacity: 0,
+            duration: 0.45,
+            ease: 'power1.out'
+          }, 1.25);
+        }, 180);
       }
     });
   }
