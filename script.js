@@ -136,9 +136,9 @@ const TOTAL_SCENES = 8;
       onUpdate() { updateString(this.targets()[0].d); }
     });
 
-    // 2. Arrow flies precisely into the heart center
+    // 2. Arrow flies precisely into the target heart center
     gsap.to(arrowSvg, {
-      y: -165,
+      y: -210,
       scaleY: 1.05,
       duration: 0.28,
       ease: 'power2.in',
@@ -155,7 +155,7 @@ const TOTAL_SCENES = 8;
           }
         });
 
-        // Arrow bursts into golden heart sparkles right at impact
+        // Arrow bursts into golden heart sparkles right at impact point!
         burstHeartParticles();
 
         // Brief dramatic pause with arrow lodged in heart before scene zoom
@@ -193,27 +193,46 @@ const TOTAL_SCENES = 8;
   }
 
   function burstHeartParticles() {
-    const area = document.getElementById('archery-area');
-    if (!area) return;
-    for (let i = 0; i < 20; i++) {
+    const heartEl = document.getElementById('emergingHeart');
+    if (!heartEl) return;
+
+    const rect = heartEl.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+
+    const emojis = ['💖', '✨', '🌸', '💖', '⭐', '🌹'];
+    for (let i = 0; i < 22; i++) {
       const p = document.createElement('div');
       p.style.cssText = `
-        position: absolute;
-        right: 120px; top: 20px;
-        font-size: ${16 + Math.random() * 24}px;
+        position: fixed;
+        left: ${centerX}px;
+        top: ${centerY}px;
+        font-size: ${18 + Math.random() * 22}px;
         pointer-events: none;
         z-index: 100;
-        transition: all 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+        transform: translate(-50%, -50%) scale(1);
+        will-change: transform, opacity;
       `;
-      p.innerHTML = '💖';
-      area.appendChild(p);
+      p.innerHTML = emojis[Math.floor(Math.random() * emojis.length)];
+      document.body.appendChild(p);
+
       const angle = Math.random() * Math.PI * 2;
-      const dist = 80 + Math.random() * 140;
-      setTimeout(() => {
-        p.style.transform = `translate(${Math.cos(angle)*dist}px, ${Math.sin(angle)*dist}px) scale(0)`;
-        p.style.opacity = '0';
-      }, 20);
-      setTimeout(() => p.remove(), 900);
+      const dist = 70 + Math.random() * 130;
+      const targetX = Math.cos(angle) * dist;
+      const targetY = Math.sin(angle) * dist - 20;
+
+      gsap.fromTo(p,
+        { scale: 0.2, opacity: 1, x: 0, y: 0 },
+        {
+          x: targetX,
+          y: targetY,
+          scale: 1.3,
+          opacity: 0,
+          duration: 0.9 + Math.random() * 0.4,
+          ease: 'power2.out',
+          onComplete: () => p.remove()
+        }
+      );
     }
   }
 
